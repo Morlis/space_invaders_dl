@@ -1,5 +1,5 @@
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 
 class Game:
     """
@@ -16,13 +16,20 @@ class Game:
     def __init__(self, driver, canvas):
         self.__driver = driver
         self.__canvas = canvas
-        self.__wrapper = driver.find_element(By.ID, 'wrap')
+        self.__actions = ActionChains(driver)
 
     def insertCoin(self):
-        self.__wrapper.send_keys('5')
+        self.__actions.send_keys('5')
+        self.__actions.perform()
 
     def playerOne(self):
-        self.__wrapper.send_keys('1')
+        self.__actions.send_keys('1')
+        self.__actions.perform()
+
+    def start(self):
+        self.__actions.send_keys('5')
+        self.__actions.send_keys('1')
+        self.__actions.perform()
 
     def fire(self):
-        self.__wrapper.send_keys(Keys.CONTROL)
+        self.__actions.send_keys(Keys.CONTROL)
