@@ -1,3 +1,4 @@
+import base64
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -34,3 +35,11 @@ class Game:
 
     def fire(self):
         self.__actions.send_keys(Keys.CONTROL)
+
+    def get_image_png(self):
+        # get the canvas as a PNG base64 string
+        canvas_base64 = self.__driver.execute_script(
+            "return arguments[0].toDataURL('image/png').substring(21);",
+            self.__canvas)
+        # decode and return
+        return base64.b64decode(canvas_base64)
