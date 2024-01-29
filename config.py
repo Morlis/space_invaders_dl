@@ -1,28 +1,30 @@
 import configparser
 import os
 
+
 class Config:
-    config = configparser.ConfigParser()
+    configuration = configparser.ConfigParser()
 
     def __init__(self):
-        self.__readConfig()
+        self.__chrome_driver = None
+        self.__read_config()
 
     @property
-    def chromeDriver(self):
-        return self.__chromeDriver
-    
-    @chromeDriver.setter
-    def chromeDriver(self, var):
-        self.__chromeDriver = var
+    def chrome_driver(self):
+        return self.__chrome_driver
+
+    @chrome_driver.setter
+    def chrome_driver(self, var):
+        self.__chrome_driver = var
 
     @property
-    def gameUrl(self):
-        return self.config['game']['url']
+    def game_url(self):
+        return self.configuration['game']['url']
 
     # Read config values
-    def __readConfig(self):
-        self.config.read('config/config.ini')
-        self.chromeDriver = os.path.join(os.getcwd(), self.config.get(
-            section='DEFAULT', 
-            option='chromeDriver',  
+    def __read_config(self):
+        self.configuration.read('config/config.ini')
+        self.chrome_driver = os.path.join(os.getcwd(), self.configuration.get(
+            section='DEFAULT',
+            option='chromeDriver',
             fallback='chromedriver/win32/chromedriver.exe'))

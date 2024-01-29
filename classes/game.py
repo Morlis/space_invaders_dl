@@ -1,11 +1,12 @@
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
+
 class Game:
     """
     Arcade Space Invaders properties class.
 
-    Keys:   
+    Keys:
         [5] insert coin
         [1] player1 select
         [control] shoot
@@ -18,11 +19,11 @@ class Game:
         self.__canvas = canvas
         self.__actions = ActionChains(driver)
 
-    def insertCoin(self):
+    def insert_coin(self):
         self.__actions.send_keys('5')
         self.__actions.perform()
 
-    def playerOne(self):
+    def player_one(self):
         self.__actions.send_keys('1')
         self.__actions.perform()
 
