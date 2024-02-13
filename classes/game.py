@@ -1,17 +1,17 @@
 import base64
 import time
+from PIL import Image
+from io import BytesIO
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
-
 class Game:
     """
-    Arcade Space Invaders properties class.
+    Arcade Space Invaders game class.
 
     Keys:
-        [5] insert coin
-        [1] player1 select
-        [control] shoot
+        [x] start game
+        [z] shoot
         [right][reft] move
     """
     num_actions = 3
@@ -33,17 +33,31 @@ class Game:
         self.__actions.perform()
 
     def start(self):
-        self.insert_coin()
-        time.sleep(0.5)
-        self.player_one()
+        self.__driver.execute_script('let event = new KeyboardEvent("keydown", { keyCode: 88 });document.dispatchEvent(event);')
 
     def fire(self):
-        self.__actions.send_keys(Keys.CONTROL)
+        self.__driver.execute_script('let event = new KeyboardEvent("keydown", { keyCode: 90 });document.dispatchEvent(event);')
+
+    def left(self):
+        self.__driver.execute_script('let event = new KeyboardEvent("keydown", { keyCode: 37 });document.dispatchEvent(event);')
+    
+    def right(self):
+        self.__driver.execute_script('let event = new KeyboardEvent("keydown", { keyCode: 39 });document.dispatchEvent(event);')
+
+    def quit(self):
+        self.__driver.quit()
 
     def get_image_png(self):
         # get the canvas as a PNG base64 string
         canvas_base64 = self.__driver.execute_script(
             "return arguments[0].toDataURL('image/png').substring(21);",
             self.__canvas)
-        # decode and return
-        return base64.b64decode(str(canvas_base64))
+        # decode from base64 to byte object
+        img_bytes = base64.b64decode(str(canvas_base64))
+        # Convert to img object
+        return Image.open(BytesIO(img_bytes), 'r')
+
+    def get_image_bw(self):
+        # get screen as png and convert to black & white image
+        img_png = self.get_image_png()
+        return img_png.convert("1", dither=0)
