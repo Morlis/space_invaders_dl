@@ -1,5 +1,6 @@
 import base64
-import time
+import numpy as np
+import cv2
 from PIL import Image
 from io import BytesIO
 from selenium.webdriver.common.keys import Keys
@@ -14,7 +15,6 @@ class Game:
         [z] shoot
         [right][reft] move
     """
-    num_actions = 3
 
     def __init__(self, driver, canvas):
         self.__driver = driver
@@ -47,7 +47,7 @@ class Game:
     def quit(self):
         self.__driver.quit()
 
-    def get_image_png(self):
+    def get_canvas_bytes(self):
         # get the canvas as a PNG base64 string
         canvas_base64 = self.__driver.execute_script(
             "return arguments[0].toDataURL('image/png').substring(21);",
@@ -55,9 +55,29 @@ class Game:
         # decode from base64 to byte object
         img_bytes = base64.b64decode(str(canvas_base64))
         # Convert to img object
-        return Image.open(BytesIO(img_bytes), 'r')
+    
+        return img_bytes
 
-    def get_image_bw(self):
+    def get_image_png(self):
+        # Convert to PIL Image object
+        return Image.open(BytesIO(self.get_canvas_bytes()), 'r')
+
+    def get_image_bw_png(self):
         # get screen as png and convert to black & white image
-        img_png = self.get_image_png()
-        return img_png.convert("1", dither=0)
+        return self.get_image_png().convert("1", dither=0)
+
+    def get_image(self):
+        # Convert string buffer to numpy array
+        nparr = np.frombuffer(self.get_canvas_bytes(), np.uint8)
+        # Create cv2 image from byte np array
+        return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    def get_image_gray(self):
+        # Create cv2 image from byte np array
+        return cv2.cvtColor(self.get_image(), cv2.COLOR_BGR2GRAY)
+    
+    def get_image_bw(self):
+        # Convert image to black & white
+        return cv2.threshold(self.get_image_gray(), 127, 255, cv2.THRESH_BINARY)[1]
+
+    

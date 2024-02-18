@@ -31,5 +31,4 @@ class Number_Parser:
             digit = self.get_digit(digit_images[i])
             total += digit * (10 ** position)
             
-        
         return total
